@@ -669,6 +669,9 @@ func (fastpathETCborBytes) EncAsMapSliceBytesV(v [][]byte, e *encoderCborBytes) 
 }
 
 func (e *encoderCborBytes) fastpathEncSliceFloat32R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []float32
 	if rv.Kind() == reflect.Array {
@@ -719,6 +722,9 @@ func (fastpathETCborBytes) EncAsMapSliceFloat32V(v []float32, e *encoderCborByte
 }
 
 func (e *encoderCborBytes) fastpathEncSliceFloat64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []float64
 	if rv.Kind() == reflect.Array {
@@ -769,6 +775,9 @@ func (fastpathETCborBytes) EncAsMapSliceFloat64V(v []float64, e *encoderCborByte
 }
 
 func (e *encoderCborBytes) fastpathEncSliceUint8R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []uint8
 	if rv.Kind() == reflect.Array {
@@ -807,6 +816,9 @@ func (fastpathETCborBytes) EncAsMapSliceUint8V(v []uint8, e *encoderCborBytes) {
 }
 
 func (e *encoderCborBytes) fastpathEncSliceUint64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []uint64
 	if rv.Kind() == reflect.Array {
@@ -857,6 +869,9 @@ func (fastpathETCborBytes) EncAsMapSliceUint64V(v []uint64, e *encoderCborBytes)
 }
 
 func (e *encoderCborBytes) fastpathEncSliceIntR(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []int
 	if rv.Kind() == reflect.Array {
@@ -907,6 +922,9 @@ func (fastpathETCborBytes) EncAsMapSliceIntV(v []int, e *encoderCborBytes) {
 }
 
 func (e *encoderCborBytes) fastpathEncSliceInt32R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []int32
 	if rv.Kind() == reflect.Array {
@@ -957,6 +975,9 @@ func (fastpathETCborBytes) EncAsMapSliceInt32V(v []int32, e *encoderCborBytes) {
 }
 
 func (e *encoderCborBytes) fastpathEncSliceInt64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborBytes
 	var v []int64
 	if rv.Kind() == reflect.Array {
@@ -4062,6 +4083,9 @@ func (fastpathDTCborBytes) DecSliceBytesN(v [][]byte, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceFloat32R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4172,6 +4196,9 @@ func (fastpathDTCborBytes) DecSliceFloat32N(v []float32, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceFloat64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4282,6 +4309,9 @@ func (fastpathDTCborBytes) DecSliceFloat64N(v []float64, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceUint8R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4373,6 +4403,9 @@ func (fastpathDTCborBytes) DecSliceUint8N(v []uint8, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceUint64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4483,6 +4516,9 @@ func (fastpathDTCborBytes) DecSliceUint64N(v []uint64, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceIntR(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4593,6 +4629,9 @@ func (fastpathDTCborBytes) DecSliceIntN(v []int, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceInt32R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -4703,6 +4742,9 @@ func (fastpathDTCborBytes) DecSliceInt32N(v []int32, d *decoderCborBytes) {
 }
 
 func (d *decoderCborBytes) fastpathDecSliceInt64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborBytes
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -6915,6 +6957,9 @@ func (fastpathETCborIO) EncAsMapSliceBytesV(v [][]byte, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceFloat32R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []float32
 	if rv.Kind() == reflect.Array {
@@ -6965,6 +7010,9 @@ func (fastpathETCborIO) EncAsMapSliceFloat32V(v []float32, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceFloat64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []float64
 	if rv.Kind() == reflect.Array {
@@ -7015,6 +7063,9 @@ func (fastpathETCborIO) EncAsMapSliceFloat64V(v []float64, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceUint8R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []uint8
 	if rv.Kind() == reflect.Array {
@@ -7053,6 +7104,9 @@ func (fastpathETCborIO) EncAsMapSliceUint8V(v []uint8, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceUint64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []uint64
 	if rv.Kind() == reflect.Array {
@@ -7103,6 +7157,9 @@ func (fastpathETCborIO) EncAsMapSliceUint64V(v []uint64, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceIntR(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []int
 	if rv.Kind() == reflect.Array {
@@ -7153,6 +7210,9 @@ func (fastpathETCborIO) EncAsMapSliceIntV(v []int, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceInt32R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []int32
 	if rv.Kind() == reflect.Array {
@@ -7203,6 +7263,9 @@ func (fastpathETCborIO) EncAsMapSliceInt32V(v []int32, e *encoderCborIO) {
 }
 
 func (e *encoderCborIO) fastpathEncSliceInt64R(f *encFnInfo, rv reflect.Value) {
+	if e.e.cborTAEncodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathETCborIO
 	var v []int64
 	if rv.Kind() == reflect.Array {
@@ -10308,6 +10371,9 @@ func (fastpathDTCborIO) DecSliceBytesN(v [][]byte, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceFloat32R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10418,6 +10484,9 @@ func (fastpathDTCborIO) DecSliceFloat32N(v []float32, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceFloat64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10528,6 +10597,9 @@ func (fastpathDTCborIO) DecSliceFloat64N(v []float64, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceUint8R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10619,6 +10691,9 @@ func (fastpathDTCborIO) DecSliceUint8N(v []uint8, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceUint64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10729,6 +10804,9 @@ func (fastpathDTCborIO) DecSliceUint64N(v []uint64, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceIntR(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10839,6 +10917,9 @@ func (fastpathDTCborIO) DecSliceIntN(v []int, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceInt32R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:
@@ -10949,6 +11030,9 @@ func (fastpathDTCborIO) DecSliceInt32N(v []int32, d *decoderCborIO) {
 }
 
 func (d *decoderCborIO) fastpathDecSliceInt64R(f *decFnInfo, rv reflect.Value) {
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	var ft fastpathDTCborIO
 	switch rv.Kind() {
 	case reflect.Ptr:

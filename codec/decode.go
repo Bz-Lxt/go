@@ -230,6 +230,11 @@ func (d *decoder[T]) kInterfaceNaked(f *decFnInfo) (rvn reflect.Value) {
 			rvn = rvGetArray4Slice(rvn)
 		}
 	case valueTypeExt:
+		if n.x != nil {
+			// e.g. RFC 8746 typed array decoded directly
+			rvn = reflect.ValueOf(n.x)
+			break
+		}
 		tag, bytes := n.u, n.l // calling decode below might taint the values
 		bfn := d.h.getExtForTag(tag)
 		var re = RawExt{Tag: tag}
@@ -508,6 +513,10 @@ func (d *decoder[T]) kSlice(f *decFnInfo, rv reflect.Value) {
 
 	// Note: rv is a slice type here - guaranteed
 
+	if ta, ok := any(d.d).(cborTADecHook); ok && ta.cborTADecodeTry(f.ti, rv) {
+		return
+	}
+
 	ti := f.ti
 	rvCanset := rv.CanSet()
 
@@ -727,6 +736,9 @@ func (d *decoder[T]) kSlice(f *decFnInfo, rv reflect.Value) {
 func (d *decoder[T]) kArray(f *decFnInfo, rv reflect.Value) {
 	_ = d.d // early asserts d, d.d are not nil once
 	// An array can be set from a map or array in stream.
+	if ta, ok := any(d.d).(cborTADecHook); ok && ta.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 	ti := f.ti
 	ctyp := d.d.ContainerType()
 	if handleBytesWithinKArray && (ctyp == valueTypeBytes || ctyp == valueTypeString) {
@@ -1446,6 +1458,10 @@ func (d *decoder[T]) decode(iv interface{}) {
 	rv, ok := isNil(iv, true) // handle nil pointers also
 	if ok {
 		halt.onerror(errCannotDecodeIntoNil)
+	}
+
+	if ta, taok := any(d.d).(cborTADecHook); taok && ta.cborTADecodeTryIface(iv) {
+		return
 	}
 
 	switch v := iv.(type) {

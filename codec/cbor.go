@@ -741,6 +741,9 @@ func (d *cborDecDriver[T]) DecodeNaked() {
 			case 55799: // skip
 				d.DecodeNaked()
 			default:
+				if d.cborTAHandleNaked(n.u, n) {
+					return
+				}
 				if d.h.SkipUnexpectedTags {
 					d.DecodeNaked()
 				}

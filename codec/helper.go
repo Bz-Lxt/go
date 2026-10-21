@@ -639,6 +639,10 @@ type fauxUnion struct {
 	// state
 	a dBytesAttachState
 	v valueType
+
+	// x holds a fully decoded value (e.g. RFC 8746 typed array)
+	// decoded directly for an interface{} target.
+	x interface{}
 }
 
 // typeInfoLoad is a transient object used while loading up a typeInfo.

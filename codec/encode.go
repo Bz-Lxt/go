@@ -314,6 +314,8 @@ func (e *encoder[T]) kChan(f *encFnInfo, rv reflect.Value) {
 func (e *encoder[T]) kSlice(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, true)
+	} else if ta, ok := any(e.e).(cborTAEncHook); ok && ta.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed array
 	} else if f.ti.rtid == uint8SliceTypId || uint8TypId == rt2id(f.ti.elem) {
 		// 'uint8TypId == rt2id(f.ti.elem)' checks types having underlying []byte
 		e.e.EncodeBytes(rvGetBytes(rv))
@@ -325,6 +327,8 @@ func (e *encoder[T]) kSlice(f *encFnInfo, rv reflect.Value) {
 func (e *encoder[T]) kArray(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, false)
+	} else if ta, ok := any(e.e).(cborTAEncHook); ok && ta.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed/multi-dimensional array
 	} else if handleBytesWithinKArray && uint8TypId == rt2id(f.ti.elem) {
 		e.e.EncodeStringBytesRaw(rvGetArrayBytes(rv, nil)) // bytes from array never nil
 	} else {
@@ -1107,6 +1111,9 @@ func (e *encoder[T]) encodeR(base reflect.Value) {
 
 func (e *encoder[T]) encodeBuiltin(iv interface{}) (ok bool) {
 	ok = true
+	if ta, taok := any(e.e).(cborTAEncHook); taok && ta.cborTAEncodeTryIface(iv) {
+		return
+	}
 	switch v := iv.(type) {
 	case nil:
 		e.e.EncodeNil()

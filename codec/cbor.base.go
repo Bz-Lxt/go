@@ -147,6 +147,34 @@ type CborHandle struct {
 	//
 	// Furthermore, this allows the skipping over of the Self Describing Tag 0xd9d9f7.
 	SkipUnexpectedTags bool
+
+	// TypedArrays says to encode/decode numeric slices and rectangular
+	// numeric arrays using the compact representation defined in RFC 8746
+	// ("CBOR Tags for Well-Known Types", typed array tags 64..87 and the
+	// multi-dimensional array tags 40 (row-major) and 1040 (column-major)).
+	//
+	// On encode, 1-dimensional slices and fixed arrays of the built-in
+	// integer types and float32/float64 are encoded as a typed array tag
+	// wrapping a single byte string, and rectangular multi-dimensional
+	// arrays (fixed or slices of fixed/slice arrays) are encoded as tag
+	// 40 with [dims, typed-array-content]. The element sign, bit width and
+	// IEEE-754 bit patterns are preserved. Elements are encoded
+	// little-endian (matching the canonical layout on common hosts);
+	// note that RFC 8746 has no preferred endianness, so interoperability
+	// partners must agree on the variant. Empty (non-nil) values are
+	// encoded as a typed array tag with a zero-length byte string; nil
+	// slices follow NilCollectionToZeroLength. Types that cannot be mapped
+	// (e.g. non-rectangular slices, MapBySlice) fall back to the regular
+	// CBOR array encoding.
+	//
+	// On decode, both little-endian and big-endian typed array tags are
+	// accepted, including the uint8-clamped tag 68 and half-float tags
+	// 80/84 (decoded into float32); the reserved tag 76 and the
+	// 128-bit float tags are rejected. Sign/width mismatches against the
+	// target are errors (except float32 widening to float64), and all
+	// malformed or overflowing lengths cause an error instead of panics
+	// or unbounded allocation.
+	TypedArrays bool
 }
 
 // Name returns the name of the handle: cbor

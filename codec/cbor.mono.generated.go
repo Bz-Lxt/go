@@ -312,6 +312,8 @@ func (e *encoderCborBytes) kChan(f *encFnInfo, rv reflect.Value) {
 func (e *encoderCborBytes) kSlice(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, true)
+	} else if e.e.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed array
 	} else if f.ti.rtid == uint8SliceTypId || uint8TypId == rt2id(f.ti.elem) {
 
 		e.e.EncodeBytes(rvGetBytes(rv))
@@ -323,6 +325,8 @@ func (e *encoderCborBytes) kSlice(f *encFnInfo, rv reflect.Value) {
 func (e *encoderCborBytes) kArray(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, false)
+	} else if e.e.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed/multi-dimensional array
 	} else if handleBytesWithinKArray && uint8TypId == rt2id(f.ti.elem) {
 		e.e.EncodeStringBytesRaw(rvGetArrayBytes(rv, nil))
 	} else {
@@ -962,6 +966,9 @@ func (e *encoderCborBytes) encodeR(base reflect.Value) {
 
 func (e *encoderCborBytes) encodeBuiltin(iv interface{}) (ok bool) {
 	ok = true
+	if e.e.cborTAEncodeTryIface(iv) {
+		return
+	}
 	switch v := iv.(type) {
 	case nil:
 		e.e.EncodeNil()
@@ -1598,6 +1605,11 @@ func (d *decoderCborBytes) kInterfaceNaked(f *decFnInfo) (rvn reflect.Value) {
 			rvn = rvGetArray4Slice(rvn)
 		}
 	case valueTypeExt:
+		if n.x != nil {
+			// e.g. RFC 8746 typed array decoded directly
+			rvn = reflect.ValueOf(n.x)
+			break
+		}
 		tag, bytes := n.u, n.l
 		bfn := d.h.getExtForTag(tag)
 		var re = RawExt{Tag: tag}
@@ -1849,6 +1861,10 @@ func (d *decoderCborBytes) kStruct(f *decFnInfo, rv reflect.Value) {
 func (d *decoderCborBytes) kSlice(f *decFnInfo, rv reflect.Value) {
 	_ = d.d
 
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
+
 	ti := f.ti
 	rvCanset := rv.CanSet()
 
@@ -2052,6 +2068,10 @@ func (d *decoderCborBytes) kSlice(f *decFnInfo, rv reflect.Value) {
 
 func (d *decoderCborBytes) kArray(f *decFnInfo, rv reflect.Value) {
 	_ = d.d
+
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 
 	ti := f.ti
 	ctyp := d.d.ContainerType()
@@ -2639,6 +2659,10 @@ func (d *decoderCborBytes) decode(iv interface{}) {
 	rv, ok := isNil(iv, true)
 	if ok {
 		halt.onerror(errCannotDecodeIntoNil)
+	}
+
+	if d.d.cborTADecodeTryIface(iv) {
+		return
 	}
 
 	switch v := iv.(type) {
@@ -3791,6 +3815,9 @@ func (d *cborDecDriverBytes) DecodeNaked() {
 			case 55799:
 				d.DecodeNaked()
 			default:
+				if d.cborTAHandleNaked(n.u, n) {
+					return
+				}
 				if d.h.SkipUnexpectedTags {
 					d.DecodeNaked()
 				}
@@ -4304,6 +4331,8 @@ func (e *encoderCborIO) kChan(f *encFnInfo, rv reflect.Value) {
 func (e *encoderCborIO) kSlice(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, true)
+	} else if e.e.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed array
 	} else if f.ti.rtid == uint8SliceTypId || uint8TypId == rt2id(f.ti.elem) {
 
 		e.e.EncodeBytes(rvGetBytes(rv))
@@ -4315,6 +4344,8 @@ func (e *encoderCborIO) kSlice(f *encFnInfo, rv reflect.Value) {
 func (e *encoderCborIO) kArray(f *encFnInfo, rv reflect.Value) {
 	if f.ti.mbs {
 		e.kArrayWMbs(rv, f.ti, false)
+	} else if e.e.cborTAEncodeTry(f.ti, rv) {
+		// RFC 8746 typed/multi-dimensional array
 	} else if handleBytesWithinKArray && uint8TypId == rt2id(f.ti.elem) {
 		e.e.EncodeStringBytesRaw(rvGetArrayBytes(rv, nil))
 	} else {
@@ -4954,6 +4985,9 @@ func (e *encoderCborIO) encodeR(base reflect.Value) {
 
 func (e *encoderCborIO) encodeBuiltin(iv interface{}) (ok bool) {
 	ok = true
+	if e.e.cborTAEncodeTryIface(iv) {
+		return
+	}
 	switch v := iv.(type) {
 	case nil:
 		e.e.EncodeNil()
@@ -5590,6 +5624,11 @@ func (d *decoderCborIO) kInterfaceNaked(f *decFnInfo) (rvn reflect.Value) {
 			rvn = rvGetArray4Slice(rvn)
 		}
 	case valueTypeExt:
+		if n.x != nil {
+			// e.g. RFC 8746 typed array decoded directly
+			rvn = reflect.ValueOf(n.x)
+			break
+		}
 		tag, bytes := n.u, n.l
 		bfn := d.h.getExtForTag(tag)
 		var re = RawExt{Tag: tag}
@@ -5841,6 +5880,10 @@ func (d *decoderCborIO) kStruct(f *decFnInfo, rv reflect.Value) {
 func (d *decoderCborIO) kSlice(f *decFnInfo, rv reflect.Value) {
 	_ = d.d
 
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
+
 	ti := f.ti
 	rvCanset := rv.CanSet()
 
@@ -6044,6 +6087,10 @@ func (d *decoderCborIO) kSlice(f *decFnInfo, rv reflect.Value) {
 
 func (d *decoderCborIO) kArray(f *decFnInfo, rv reflect.Value) {
 	_ = d.d
+
+	if d.d.cborTADecodeTry(f.ti, rv) {
+		return
+	}
 
 	ti := f.ti
 	ctyp := d.d.ContainerType()
@@ -6631,6 +6678,10 @@ func (d *decoderCborIO) decode(iv interface{}) {
 	rv, ok := isNil(iv, true)
 	if ok {
 		halt.onerror(errCannotDecodeIntoNil)
+	}
+
+	if d.d.cborTADecodeTryIface(iv) {
+		return
 	}
 
 	switch v := iv.(type) {
@@ -7783,6 +7834,9 @@ func (d *cborDecDriverIO) DecodeNaked() {
 			case 55799:
 				d.DecodeNaked()
 			default:
+				if d.cborTAHandleNaked(n.u, n) {
+					return
+				}
 				if d.h.SkipUnexpectedTags {
 					d.DecodeNaked()
 				}
